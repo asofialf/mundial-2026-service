@@ -112,4 +112,55 @@ public class PredictionController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    // ── Predicciones de Eliminatorias ────────────────────────────
+    // NUEVO: el backend original no tenía persistencia para esto.
+
+    /**
+     ** POST /api/prediction/create-user-knockout-prediction
+     **/
+    @PostMapping("/create-user-knockout-prediction")
+    public ResponseEntity<Map<String, Object>> createUserKnockoutPrediction(@RequestParam int matchId,
+                                                                             @RequestParam int userId,
+                                                                             @RequestParam int scoreTeamA,
+                                                                             @RequestParam int scoreTeamB,
+                                                                             @RequestParam int advancingTeamId,
+                                                                             @RequestParam boolean hasPenalties) {
+        try {
+            Map<String, Object> newPrediction = predictionService.createUserKnockoutPrediction(matchId, userId, scoreTeamA, scoreTeamB, advancingTeamId, hasPenalties);
+            return ResponseEntity.ok(newPrediction);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
+     ** PUT /api/prediction/update-user-knockout-prediction
+     **/
+    @PutMapping("/update-user-knockout-prediction")
+    public ResponseEntity<Map<String, Object>> updateUserKnockoutPrediction(@RequestParam int predictionId,
+                                                                             @RequestParam int scoreTeamA,
+                                                                             @RequestParam int scoreTeamB,
+                                                                             @RequestParam int advancingTeamId,
+                                                                             @RequestParam boolean hasPenalties) {
+        try {
+            Map<String, Object> updatedPrediction = predictionService.updateUserKnockoutPrediction(predictionId, scoreTeamA, scoreTeamB, advancingTeamId, hasPenalties);
+            return ResponseEntity.ok(updatedPrediction);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
+     ** GET /api/prediction/get-user-knockout-prediction
+     **/
+    @GetMapping("/get-user-knockout-prediction")
+    public ResponseEntity<List<Map<String, Object>>> getUserKnockoutPrediction(@RequestParam int userId) {
+        try {
+            List<Map<String, Object>> predictions = predictionService.getUserKnockoutPredictions(userId);
+            return ResponseEntity.ok(predictions);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }

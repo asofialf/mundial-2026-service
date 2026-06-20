@@ -64,7 +64,12 @@ public class UserRepositoryImpl implements IUserRepository {
         try {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-            String sql = "SELECT * FROM users";
+            // LEFT JOIN a profiles para incluir el alias (lo necesita el leaderboard;
+            // el endpoint original solo traía la tabla users, sin alias).
+            // NOTA: se asume que la tabla se llama "profiles" (plural, como "users"
+            // y "matches") — verificar contra el esquema real si esto falla.
+            String sql = "SELECT u.*, p.alias AS alias, p.name AS profile_name, p.icon AS icon " +
+                    "FROM users u LEFT JOIN profiles p ON p.users_id = u.user_id";
 
             return namedParameterJdbcTemplate.queryForList(sql, parameters);
         } catch (DataAccessException ex) {
@@ -113,7 +118,7 @@ public class UserRepositoryImpl implements IUserRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("userId", userId, Types.INTEGER);
             parameters.addValue("oldPassword", oldPassword, Types.VARCHAR);
-            parameters.addValue("newPassword", oldPassword, Types.VARCHAR);
+            parameters.addValue("newPassword", newPassword, Types.VARCHAR);
 
             String sql = "EXEC sp_change_password @user_id = :userId, @old_password = :oldPassword, @new_password = :newPassword";
 

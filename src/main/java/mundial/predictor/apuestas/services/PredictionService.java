@@ -33,4 +33,17 @@ public class PredictionService {
     public Map<String, Object> updateUserBestThirdById(int userBestThirdId, int userId, int countryId){
         return predictionRepository.updateUserBestThirdById(userBestThirdId, userId, countryId);
     }
+
+    public Map<String, Object> createUserKnockoutPrediction(int matchId, int userId, int scoreTeamA, int scoreTeamB, int advancingTeamId, boolean hasPenalties){
+        return predictionRepository.createUserKnockoutPrediction(matchId, userId, scoreTeamA, scoreTeamB, advancingTeamId, hasPenalties);
+    }
+    public Map<String, Object> updateUserKnockoutPrediction(int predictionId, int scoreTeamA, int scoreTeamB, int advancingTeamId, boolean hasPenalties){
+        return predictionRepository.updateUserKnockoutPrediction(predictionId, scoreTeamA, scoreTeamB, advancingTeamId, hasPenalties);
+    }
+    public List<Map<String, Object>> getUserKnockoutPredictions(int userId){
+        return predictionRepository.getUserKnockoutPredictions(userId);
+    }
+    public List<Map<String, Object>> getAllKnockoutPredictions(){
+        return predictionRepository.getAllKnockoutPredictions();
+    }
 }

@@ -18,7 +18,8 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "http://localhost:4200",
-                                "https://mundial-2026-service-production.up.railway.app"
+                                "https://mundial-2026-service-production.up.railway.app",
+                                "https://mundial-2026-frontend-cyan.vercel.app"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")

@@ -136,4 +136,86 @@ public class PredictionRepositoryImpl implements IPredictionRepository {
             throw new RuntimeException("Error inesperado al obtener la información de los usuarios: " + ex.getMessage(), ex);
         }
     }
+
+    // ── Predicciones de Eliminatorias ────────────────────────────
+    // NUEVO: no existían en el esquema original. Tabla creada por
+    // SchemaInitializer (ver config/SchemaInitializer.java).
+
+    @Override
+    public Map<String, Object> createUserKnockoutPrediction(int matchId, int userId, int scoreTeamA, int scoreTeamB, int advancingTeamId, boolean hasPenalties) {
+        try {
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("matchId", matchId, Types.INTEGER);
+            parameters.addValue("userId", userId, Types.INTEGER);
+            parameters.addValue("scoreTeamA", scoreTeamA, Types.INTEGER);
+            parameters.addValue("scoreTeamB", scoreTeamB, Types.INTEGER);
+            parameters.addValue("advancingTeamId", advancingTeamId, Types.INTEGER);
+            parameters.addValue("hasPenalties", hasPenalties, Types.BOOLEAN);
+
+            String sql = "INSERT INTO user_knockout_predictions " +
+                    "(match_id, user_id, score_team_a, score_team_b, advancing_team_id, has_penalties) " +
+                    "OUTPUT inserted.* " +
+                    "VALUES (:matchId, :userId, :scoreTeamA, :scoreTeamB, :advancingTeamId, :hasPenalties)";
+
+            return namedParameterJdbcTemplate.queryForMap(sql, parameters);
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Error al crear la predicción de eliminatoria: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error inesperado al crear la predicción de eliminatoria: " + ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public Map<String, Object> updateUserKnockoutPrediction(int predictionId, int scoreTeamA, int scoreTeamB, int advancingTeamId, boolean hasPenalties) {
+        try {
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("predictionId", predictionId, Types.INTEGER);
+            parameters.addValue("scoreTeamA", scoreTeamA, Types.INTEGER);
+            parameters.addValue("scoreTeamB", scoreTeamB, Types.INTEGER);
+            parameters.addValue("advancingTeamId", advancingTeamId, Types.INTEGER);
+            parameters.addValue("hasPenalties", hasPenalties, Types.BOOLEAN);
+
+            String sql = "UPDATE user_knockout_predictions SET " +
+                    "score_team_a = :scoreTeamA, score_team_b = :scoreTeamB, " +
+                    "advancing_team_id = :advancingTeamId, has_penalties = :hasPenalties " +
+                    "OUTPUT inserted.* " +
+                    "WHERE prediction_id = :predictionId";
+
+            return namedParameterJdbcTemplate.queryForMap(sql, parameters);
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Error al actualizar la predicción de eliminatoria: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error inesperado al actualizar la predicción de eliminatoria: " + ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> getUserKnockoutPredictions(int userId) {
+        try {
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("userId", userId, Types.INTEGER);
+
+            String sql = "SELECT * FROM user_knockout_predictions WHERE user_id = :userId";
+
+            return namedParameterJdbcTemplate.queryForList(sql, parameters);
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Error al obtener las predicciones de eliminatoria: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error inesperado al obtener las predicciones de eliminatoria: " + ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllKnockoutPredictions() {
+        try {
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            String sql = "SELECT * FROM user_knockout_predictions";
+
+            return namedParameterJdbcTemplate.queryForList(sql, parameters);
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Error al obtener las predicciones de eliminatoria: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error inesperado al obtener las predicciones de eliminatoria: " + ex.getMessage(), ex);
+        }
+    }
 }

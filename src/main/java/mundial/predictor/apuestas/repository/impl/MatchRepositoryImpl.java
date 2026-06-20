@@ -158,7 +158,8 @@ public class MatchRepositoryImpl implements IMatchRepository {
     public Map<String, Object> unlockMatch(int matchId){
         try {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
-            String sql = "UPDATE matches SET is_locked = 0 WHERE match_id = :matchId";
+            parameters.addValue("matchId", matchId, Types.INTEGER);
+            String sql = "UPDATE matches SET is_locked = 0 WHERE match_id = :matchId; SELECT * FROM matches WHERE match_id = :matchId";
 
             return namedParameterJdbcTemplate.queryForMap(sql, parameters);
         } catch (DataAccessException ex) {
@@ -172,7 +173,8 @@ public class MatchRepositoryImpl implements IMatchRepository {
     public Map<String, Object> lockMatch(int matchId){
         try {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
-            String sql = "UPDATE matches SET is_locked = 1 WHERE match_id = :matchId";
+            parameters.addValue("matchId", matchId, Types.INTEGER);
+            String sql = "UPDATE matches SET is_locked = 1 WHERE match_id = :matchId; SELECT * FROM matches WHERE match_id = :matchId";
 
             return namedParameterJdbcTemplate.queryForMap(sql, parameters);
         } catch (DataAccessException ex) {
