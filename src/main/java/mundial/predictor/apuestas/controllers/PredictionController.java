@@ -1,7 +1,9 @@
 package mundial.predictor.apuestas.controllers;
 
+import mundial.predictor.apuestas.services.PredictionNotAllowedException;
 import mundial.predictor.apuestas.services.PredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -129,6 +131,8 @@ public class PredictionController {
         try {
             Map<String, Object> newPrediction = predictionService.createUserKnockoutPrediction(matchId, userId, scoreTeamA, scoreTeamB, advancingTeamId, hasPenalties);
             return ResponseEntity.ok(newPrediction);
+        } catch (PredictionNotAllowedException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("status", "ERROR", "message", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
@@ -139,13 +143,16 @@ public class PredictionController {
      **/
     @PutMapping("/update-user-knockout-prediction")
     public ResponseEntity<Map<String, Object>> updateUserKnockoutPrediction(@RequestParam int predictionId,
+                                                                             @RequestParam int matchId,
                                                                              @RequestParam int scoreTeamA,
                                                                              @RequestParam int scoreTeamB,
                                                                              @RequestParam int advancingTeamId,
                                                                              @RequestParam boolean hasPenalties) {
         try {
-            Map<String, Object> updatedPrediction = predictionService.updateUserKnockoutPrediction(predictionId, scoreTeamA, scoreTeamB, advancingTeamId, hasPenalties);
+            Map<String, Object> updatedPrediction = predictionService.updateUserKnockoutPrediction(predictionId, matchId, scoreTeamA, scoreTeamB, advancingTeamId, hasPenalties);
             return ResponseEntity.ok(updatedPrediction);
+        } catch (PredictionNotAllowedException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("status", "ERROR", "message", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }

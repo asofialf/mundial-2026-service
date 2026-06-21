@@ -81,6 +81,21 @@ public class MatchRepositoryImpl implements IMatchRepository {
     }
 
     @Override
+    public Map<String, Object> getMatchById(int matchId){
+        try {
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("matchId", matchId, Types.INTEGER);
+            String sql = "SELECT * FROM matches WHERE match_id = :matchId";
+
+            return namedParameterJdbcTemplate.queryForMap(sql, parameters);
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Error al obtener el partido: " + ex.getMessage(), ex);
+        } catch (Exception ex) {
+            throw new RuntimeException("Error inesperado al obtener el partido: " + ex.getMessage(), ex);
+        }
+    }
+
+    @Override
     public List<Map<String, Object>> getMatchesByHomeTeam(int countryId){
         try {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
