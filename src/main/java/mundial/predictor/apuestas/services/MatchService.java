@@ -21,6 +21,9 @@ public class MatchService {
     public List<Map<String, Object>> getMatches(){
         return matchRepository.getMatches();
     }
+    public Map<String, Object> getMatchById(int matchId){
+        return matchRepository.getMatchById(matchId);
+    }
     public List<Map<String, Object>> getMatchesByHomeTeam(int countryId){
         return matchRepository.getMatchesByHomeTeam(countryId);
     }
