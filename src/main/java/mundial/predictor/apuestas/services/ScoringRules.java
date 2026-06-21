@@ -20,4 +20,7 @@ public final class ScoringRules {
 
     /** matchStageId de la fase de grupos (suposición — confirmar con backend real). */
     public static final int GROUP_STAGE_ID = 1;
+
+    /** rol_id de administrador (tabla roles: 1=ADMIN, 2=USER) — excluido del leaderboard. */
+    public static final int ADMIN_ROLE_ID = 1;
 }

@@ -43,6 +43,11 @@ public class LeaderboardService {
             int userId = intVal(user, "user_id", "userId");
             if (userId < 0) continue;
 
+            // Los administradores (rol_id=1, ver tabla roles) no son
+            // jugadores — no deben aparecer en el leaderboard.
+            int rolId = intVal(user, "rol_id", "rolId");
+            if (rolId == ScoringRules.ADMIN_ROLE_ID) continue;
+
             String alias = strVal(user, "alias", "profile_name", "email");
 
             List<Map<String, Object>> groupPreds = predictionService.getUserGroupPrediction(userId);
