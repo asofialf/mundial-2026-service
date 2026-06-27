@@ -141,6 +141,12 @@ public class LeaderboardService {
     }
 
     private Set<Integer> computeBestThirds(Map<Integer, List<StandingRow>> standingsByGroup) {
+        // Si ningún grupo tiene partidos jugados aún, no hay terceros reales que evaluar.
+        boolean anyGroupPlayed = standingsByGroup.values().stream()
+                .flatMap(List::stream)
+                .anyMatch(r -> r.points > 0 || r.goalsFor > 0 || r.goalsAgainst > 0);
+        if (!anyGroupPlayed) return Collections.emptySet();
+
         Comparator<StandingRow> byStanding = Comparator
                 .comparingInt((StandingRow r) -> r.points).reversed()
                 .thenComparing(Comparator.comparingInt((StandingRow r) -> r.goalDiff()).reversed())
