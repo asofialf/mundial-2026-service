@@ -202,7 +202,7 @@ public class LeaderboardService {
     }
 
     private int scoreKnockoutPredictions(List<Map<String, Object>> predictions, Map<Integer, Map<String, Object>> matchesById) {
-        int points = 0;
+        double total = 0.0;
         for (Map<String, Object> pred : predictions) {
             int matchId = intVal(pred, "match_id", "matchId");
             Map<String, Object> match = matchesById.get(matchId);
@@ -219,18 +219,23 @@ public class LeaderboardService {
 
             Integer winnerTeamId = nullableInt(match, "winner_team_id", "winnerTeamId");
 
+            int basePoints = 0;
             if (scoreTeamA == homeScore && scoreTeamB == awayScore) {
-                points += ScoringRules.MARCADOR_EXACTO;
+                basePoints += ScoringRules.MARCADOR_EXACTO;
             } else if (winnerTeamId != null && advancingTeamId == winnerTeamId) {
-                points += ScoringRules.CLASIFICADO_ACERTADO;
+                basePoints += ScoringRules.CLASIFICADO_ACERTADO;
             }
 
             Integer penalties = nullableInt(match, "penalties");
             if (penalties != null && hasPenalties == (penalties == 1)) {
-                points += ScoringRules.PENALES_ACERTADO;
+                basePoints += ScoringRules.PENALES_ACERTADO;
             }
+
+            int stageId = intVal(match, "match_stage_id", "matchStageId");
+            double multiplier = ScoringRules.STAGE_MULTIPLIER.getOrDefault(stageId, 1.0);
+            total += basePoints * multiplier;
         }
-        return points;
+        return (int) Math.round(total);
     }
 
     private Map<Integer, Map<String, Object>> indexById(List<Map<String, Object>> rows, String... idKeys) {
