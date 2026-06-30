@@ -222,7 +222,8 @@ public class LeaderboardService {
             int basePoints = 0;
             if (scoreTeamA == homeScore && scoreTeamB == awayScore) {
                 basePoints += ScoringRules.MARCADOR_EXACTO;
-            } else if (winnerTeamId != null && advancingTeamId == winnerTeamId) {
+            }
+            if (winnerTeamId != null && advancingTeamId == winnerTeamId) {
                 basePoints += ScoringRules.CLASIFICADO_ACERTADO;
             }
 
