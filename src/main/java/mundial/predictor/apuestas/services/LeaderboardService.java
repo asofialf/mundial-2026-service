@@ -29,13 +29,9 @@ public class LeaderboardService {
     }
 
     public List<Map<String, Object>> getLeaderboard() {
-        List<Map<String, Object>> groups = groupService.getAllGroupsWithCountries();
         List<Map<String, Object>> matches = matchService.getMatches();
         List<Map<String, Object>> users = userService.getUsers();
 
-        Map<Integer, Integer> countryToGroup = mapCountryToGroup(groups);
-        Map<Integer, List<StandingRow>> standingsByGroup = computeStandings(groups, matches, countryToGroup);
-        Set<Integer> actualBestThirds = computeBestThirds(standingsByGroup);
         Map<Integer, Map<String, Object>> matchesById = indexById(matches, "match_id", "matchId");
 
         List<Map<String, Object>> rows = new ArrayList<>();
@@ -43,25 +39,22 @@ public class LeaderboardService {
             int userId = intVal(user, "user_id", "userId");
             if (userId < 0) continue;
 
-            // Los administradores (rol_id=1, ver tabla roles) no son
-            // jugadores — no deben aparecer en el leaderboard.
             int rolId = intVal(user, "rol_id", "rolId");
             if (rolId == ScoringRules.ADMIN_ROLE_ID) continue;
 
             String alias = strVal(user, "alias", "profile_name", "email");
 
-            List<Map<String, Object>> groupPreds = predictionService.getUserGroupPrediction(userId);
-            List<Map<String, Object>> thirdPreds = predictionService.getUserBestThird(userId);
             List<Map<String, Object>> knockoutPreds = predictionService.getUserKnockoutPredictions(userId);
 
-            int groupPts = scoreGroupPredictions(groupPreds, standingsByGroup);
-            int thirdPts = scoreBestThirdPredictions(thirdPreds, actualBestThirds);
+            int groupPts = userService.getGroupPoints(userId);
             int knockoutPts = scoreKnockoutPredictions(knockoutPreds, matchesById);
 
             Map<String, Object> row = new LinkedHashMap<>();
             row.put("userId", userId);
             row.put("alias", alias);
-            row.put("totalPoints", groupPts + thirdPts + knockoutPts);
+            row.put("groupPoints", groupPts);
+            row.put("knockoutPoints", knockoutPts);
+            row.put("totalPoints", groupPts + knockoutPts);
             rows.add(row);
         }
 

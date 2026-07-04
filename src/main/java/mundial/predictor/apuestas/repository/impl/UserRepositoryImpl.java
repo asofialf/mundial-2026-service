@@ -129,4 +129,17 @@ public class UserRepositoryImpl implements IUserRepository {
             throw new RuntimeException("Error inesperado al obtener la información de inicio de sesión: " + ex.getMessage(), ex);
         }
     }
+
+    @Override
+    public int getGroupPoints(int userId) {
+        try {
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("userId", userId, Types.INTEGER);
+            String sql = "SELECT COALESCE((SELECT points FROM user_points WHERE user_id = :userId AND stage_id = 1), 0)";
+            Integer pts = namedParameterJdbcTemplate.queryForObject(sql, parameters, Integer.class);
+            return pts != null ? pts : 0;
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
 }
