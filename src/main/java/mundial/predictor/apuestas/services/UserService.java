@@ -30,4 +30,7 @@ public class UserService {
     public Map<String, Object> changePassword(int userId, String oldPassword, String newPassword){
         return userRepository.changePassword(userId, oldPassword, newPassword);
     }
+    public int getGroupPoints(int userId) {
+        return userRepository.getGroupPoints(userId);
+    }
 }

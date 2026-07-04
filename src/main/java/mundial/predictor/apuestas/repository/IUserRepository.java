@@ -10,5 +10,6 @@ public interface IUserRepository {
     Map<String, Object> getUserById(int userId);
     Map<String, Object> getUserForLogin(int loginType, String loginValue);
     Map<String, Object> changePassword(int userId, String oldPassword, String newPassword);
+    int getGroupPoints(int userId);
 }
 
