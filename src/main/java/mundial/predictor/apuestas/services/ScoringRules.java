@@ -7,11 +7,11 @@ import java.util.Map;
  * scoring.config.ts del frontend. Edita estos números para cambiar
  * el sistema de puntos.
  *
- * Eliminatorias — puntaje BASE por partido (máximo 8 pts):
- *   Marcador exacto (90 min): 2 pts
- *   Equipo clasificado:        5 pts
- *   Penales sí/no:             1 pt
- * Luego se multiplica por el multiplicador de ronda y se redondea.
+ * Eliminatorias — puntaje BASE por partido (máximo 80 pts):
+ *   Marcador exacto (90 min): 20 pts
+ *   Equipo clasificado:        50 pts
+ *   Penales sí/no:             10 pt
+ * Luego se multiplica por el multiplicador de ronda (resultado siempre entero).
  */
 public final class ScoringRules {
     private ScoringRules() {}
@@ -21,10 +21,10 @@ public final class ScoringRules {
     public static final int EQUIPO_EN_TOP2_SIN_ORDEN  = 1;
     public static final int MEJOR_TERCERO_ACERTADO    = 1;
 
-    // Eliminatorias — puntaje base
-    public static final int MARCADOR_EXACTO       = 2;
-    public static final int CLASIFICADO_ACERTADO  = 5;
-    public static final int PENALES_ACERTADO      = 1;
+    // Eliminatorias — puntaje base (×10 para evitar decimales con multiplicadores ×1.5)
+    public static final int MARCADOR_EXACTO       = 20;
+    public static final int CLASIFICADO_ACERTADO  = 50;
+    public static final int PENALES_ACERTADO      = 10;
 
     /**
      * Multiplicadores por ronda (matchStageId → factor).
